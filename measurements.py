@@ -3,14 +3,15 @@ import os
 import timeit
 from enum import Enum
 from typing import Tuple
+import math
 
 from eth_hash.auto import keccak  # Canonical Ethereum hash library
 
 # --- CONFIGURATION ---
 
-BLOCKS: int = 256
-BLOCK_SIZE: int = 1024
-ITERATIONS: int = 500
+BLOCKS: int = 8192
+BLOCK_SIZE: int = 8192
+ITERATIONS: int = 50
 
 # --- HELPER FUNCTIONS ---
 
@@ -87,35 +88,79 @@ def measure_latency_and_throughput(
 
 
 def main():
-    input_data: list[bytes] = [os.urandom(BLOCK_SIZE * i) for i in range(1, BLOCKS)]
+    print("Blockchain Hash Function Benchmark Results:\n")
 
-    print("Blockchain Hash Function Benchmark Results")
-    print(
-        f"**Data Size:** {BLOCK_SIZE / 1024 / 1024:.0f}MB | **Iterations per Test:** {ITERATIONS}\n"
-    )
-    print(
-        f"{'ALGORITHM':<25} | {'THROUGHPUT (MB/s)':<20} | {'BLOCK LATENCY (ms)':<20} | {'AVALANCHE (%)':<15}"
-    )
-    print("-" * 87)
-
-    for algo in [HashAlgorithm.SHA256, HashAlgorithm.BLAKE2b, HashAlgorithm.Keccak256]:
-        mb_per_sec = 0
-        latency_ms = 0
-        avalanche_score = 0
-        for block in input_data:
-            throughput, latency = measure_latency_and_throughput(algo, block)
-            mb_per_sec += throughput
-            latency_ms += latency
-            avalanche_score += measure_avalanche_effect(algo, block)
-        mb_per_sec /= len(input_data)
-        latency_ms /= len(input_data)
-        avalanche_score /= len(input_data)
+    print()
+    print("*" * 87)
+    print("BLOCKS scaling")
+    print("*" * 87)
+    print()
+    
+    for blocks in range(1, int(math.log2(BLOCKS))):
+        input_data: list[bytes] = [os.urandom(BLOCK_SIZE) for i in range(0, 2**blocks)]
 
         print(
-            f"{algo:<25} | {mb_per_sec:>18.2f} | {latency_ms:>18.4f} | {avalanche_score:>13.2f}%"
+            f"Blocks: {2**blocks} | Block Size: {BLOCK_SIZE} | Data Size: {(BLOCK_SIZE * (2**blocks)) / 1024 / 1024:.2f}MB | Iterations per Test: {ITERATIONS}\n"
         )
+        print(
+            f"{'ALGORITHM':<25} | {'THROUGHPUT (MB/s)':<20} | {'BLOCK LATENCY (ms)':<20} | {'AVALANCHE (%)':<15}"
+        )
+        print("-" * 87)
 
-    print("-" * 87)
+        for algo in [HashAlgorithm.SHA256, HashAlgorithm.BLAKE2b, HashAlgorithm.Keccak256]:
+            mb_per_sec = 0
+            latency_ms = 0
+            avalanche_score = 0
+            for block in input_data:
+                throughput, latency = measure_latency_and_throughput(algo, block)
+                mb_per_sec += throughput
+                latency_ms += latency
+                avalanche_score += measure_avalanche_effect(algo, block)
+            mb_per_sec /= len(input_data)
+            latency_ms /= len(input_data)
+            avalanche_score /= len(input_data)
+
+            print(
+                f"{algo.value:<25} | {mb_per_sec:>18.2f} | {latency_ms:>18.4f} | {avalanche_score:>13.2f}%"
+            )
+
+        print("-" * 87)
+
+    print()
+    print("*" * 87)
+    print("BLOCK_SIZE scaling")
+    print("*" * 87)
+    print()
+
+    for block_size in range(1, int(math.log2(BLOCK_SIZE))):
+        input_data: list[bytes] = [os.urandom(2**block_size) for i in range(0, BLOCKS)]
+
+        print(
+            f"Blocks: {BLOCKS} | Block Size: {2**block_size} | Data Size: {((2**block_size) * BLOCKS) / 1024 / 1024:.2f}MB | Iterations per Test: {ITERATIONS}\n"
+        )
+        print(
+            f"{'ALGORITHM':<25} | {'THROUGHPUT (MB/s)':<20} | {'BLOCK LATENCY (ms)':<20} | {'AVALANCHE (%)':<15}"
+        )
+        print("-" * 87)
+
+        for algo in [HashAlgorithm.SHA256, HashAlgorithm.BLAKE2b, HashAlgorithm.Keccak256]:
+            mb_per_sec = 0
+            latency_ms = 0
+            avalanche_score = 0
+            for block in input_data:
+                throughput, latency = measure_latency_and_throughput(algo, block)
+                mb_per_sec += throughput
+                latency_ms += latency
+                avalanche_score += measure_avalanche_effect(algo, block)
+            mb_per_sec /= len(input_data)
+            latency_ms /= len(input_data)
+            avalanche_score /= len(input_data)
+
+            print(
+                f"{algo.value:<25} | {mb_per_sec:>18.2f} | {latency_ms:>18.4f} | {avalanche_score:>13.2f}%"
+            )
+
+        print("-" * 87)
 
 
 if __name__ == "__main__":
