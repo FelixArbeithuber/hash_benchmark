@@ -17,6 +17,10 @@ def measure_hash_footprints():
     blake2b.update(input_data)
     _ = blake2b.digest()
 
+    sha3_256 = hashlib.sha3_256()
+    sha3_256.update(input_data)
+    _ = sha3_256.digest()
+
     _ = keccak(input_data)
 
 

@@ -2,16 +2,20 @@ Filename: ram_usage.py
 
 Line #    Mem usage    Increment  Occurrences   Line Contents
 =============================================================
-    10     94.8 MiB     94.8 MiB           1   @profile
+    10     94.7 MiB     94.7 MiB           1   @profile
     11                                         def measure_hash_footprints():
-    12     94.8 MiB      0.0 MiB           1       sha256 = hashlib.sha256()
-    13     94.8 MiB      0.0 MiB           1       sha256.update(input_data)
-    14     94.8 MiB      0.0 MiB           1       _ = sha256.digest()
+    12     94.7 MiB      0.0 MiB           1       sha256 = hashlib.sha256()
+    13     94.7 MiB      0.0 MiB           1       sha256.update(input_data)
+    14     94.7 MiB      0.0 MiB           1       _ = sha256.digest()
     15                                             
-    16     94.8 MiB      0.0 MiB           1       blake2b = hashlib.blake2b()
-    17     94.8 MiB      0.0 MiB           1       blake2b.update(input_data)
-    18     94.8 MiB      0.0 MiB           1       _ = blake2b.digest()
+    16     94.7 MiB      0.0 MiB           1       blake2b = hashlib.blake2b()
+    17     94.7 MiB      0.0 MiB           1       blake2b.update(input_data)
+    18     94.7 MiB      0.0 MiB           1       _ = blake2b.digest()
     19                                         
-    20     96.1 MiB      1.4 MiB           1       _ = keccak(input_data)
+    20     94.7 MiB      0.0 MiB           1       sha3_256 = hashlib.sha3_256()
+    21     94.7 MiB      0.0 MiB           1       sha3_256.update(input_data)
+    22     94.7 MiB      0.0 MiB           1       _ = sha3_256.digest()
+    23                                         
+    24     96.1 MiB      1.4 MiB           1       _ = keccak(input_data)
 
 
