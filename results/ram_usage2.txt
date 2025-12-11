@@ -1,0 +1,11 @@
+/home/felix/Documents/Public/research_methods/benchmark/.venv/lib/python3.14/site-packages/Crypto/Hash/keccak.py:60: size=2756 B (+2756 B), count=11 (+11), average=251 B
+/home/felix/Documents/Public/research_methods/benchmark/.venv/lib/python3.14/site-packages/Crypto/Hash/keccak.py:33: size=400 B (+400 B), count=1 (+1), average=400 B
+/home/felix/Documents/Public/research_methods/benchmark/.venv/lib/python3.14/site-packages/Crypto/Hash/keccak.py:143: size=168 B (+168 B), count=1 (+1), average=168 B
+/home/felix/Documents/Public/research_methods/benchmark/.venv/lib/python3.14/site-packages/Crypto/Hash/keccak.py:134: size=168 B (+168 B), count=1 (+1), average=168 B
+/home/felix/Documents/Public/research_methods/benchmark/.venv/lib/python3.14/site-packages/Crypto/Hash/keccak.py:124: size=168 B (+168 B), count=1 (+1), average=168 B
+/home/felix/Documents/Public/research_methods/benchmark/.venv/lib/python3.14/site-packages/Crypto/Hash/keccak.py:105: size=168 B (+168 B), count=1 (+1), average=168 B
+/home/felix/Documents/Public/research_methods/benchmark/.venv/lib/python3.14/site-packages/Crypto/Hash/keccak.py:88: size=168 B (+168 B), count=1 (+1), average=168 B
+/home/felix/Documents/Public/research_methods/benchmark/.venv/lib/python3.14/site-packages/Crypto/Hash/keccak.py:69: size=168 B (+168 B), count=1 (+1), average=168 B
+/home/felix/Documents/Public/research_methods/benchmark/.venv/lib/python3.14/site-packages/Crypto/Hash/keccak.py:115: size=80 B (+80 B), count=1 (+1), average=80 B
+/home/felix/Documents/Public/research_methods/benchmark/.venv/lib/python3.14/site-packages/Crypto/Hash/keccak.py:98: size=72 B (+72 B), count=1 (+1), average=72 B
+/home/felix/Documents/Public/research_methods/benchmark/.venv/lib/python3.14/site-packages/Crypto/Hash/keccak.py:78: size=72 B (+72 B), count=1 (+1), average=72 B

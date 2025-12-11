@@ -1,21 +1,28 @@
-Filename: ram_usage.py
+Filename: /home/felix/Documents/Public/research_methods/benchmark/ram_usage.py
 
 Line #    Mem usage    Increment  Occurrences   Line Contents
 =============================================================
-    10     94.7 MiB     94.7 MiB           1   @profile
-    11                                         def measure_hash_footprints():
-    12     94.7 MiB      0.0 MiB           1       sha256 = hashlib.sha256()
-    13     94.7 MiB      0.0 MiB           1       sha256.update(input_data)
-    14     94.7 MiB      0.0 MiB           1       _ = sha256.digest()
-    15                                             
-    16     94.7 MiB      0.0 MiB           1       blake2b = hashlib.blake2b()
-    17     94.7 MiB      0.0 MiB           1       blake2b.update(input_data)
-    18     94.7 MiB      0.0 MiB           1       _ = blake2b.digest()
+     4 27545600.0 MiB 27545600.0 MiB           1   @profile
+     5                                         def measure_hash_footprints():
+     6 27545600.0 MiB      0.0 MiB           1       import os
+     7 94691328.0 MiB 67145728.0 MiB           1       input_data = os.urandom(8194 * 8194)
+     8                                         
+     9 96321536.0 MiB 1630208.0 MiB           1       import hashlib
+    10 99028992.0 MiB 2707456.0 MiB           1       from eth_hash.auto import keccak
+    11                                         
+    12 99028992.0 MiB      0.0 MiB           1       sha256 = hashlib.sha256()
+    13 99028992.0 MiB      0.0 MiB           1       sha256.update(input_data)
+    14 99028992.0 MiB      0.0 MiB           1       _ = sha256.digest()
+    15                                         
+    16 99028992.0 MiB      0.0 MiB           1       blake2b = hashlib.blake2b()
+    17 99028992.0 MiB      0.0 MiB           1       blake2b.update(input_data)
+    18 99028992.0 MiB      0.0 MiB           1       _ = blake2b.digest()
     19                                         
-    20     94.7 MiB      0.0 MiB           1       sha3_256 = hashlib.sha3_256()
-    21     94.7 MiB      0.0 MiB           1       sha3_256.update(input_data)
-    22     94.7 MiB      0.0 MiB           1       _ = sha3_256.digest()
+    20 99028992.0 MiB      0.0 MiB           1       sha3_256 = hashlib.sha3_256()
+    21 99028992.0 MiB      0.0 MiB           1       sha3_256.update(input_data)
+    22 99028992.0 MiB      0.0 MiB           1       _ = sha3_256.digest()
     23                                         
-    24     96.1 MiB      1.4 MiB           1       _ = keccak(input_data)
+    24 100245504.0 MiB 1216512.0 MiB           1       _ = keccak(input_data)
+    25 100249600.0 MiB   4096.0 MiB           1       _ = keccak(input_data)
 
 
