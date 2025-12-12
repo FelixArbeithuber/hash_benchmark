@@ -6,5 +6,11 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "eth-hash[pycryptodome]>=0.7.1",
+    "matplotlib>=3.10.8",
     "memory-profiler>=0.61.0",
+]
+
+[dependency-groups]
+dev = [
+    "ty>=0.0.1a33",
 ]

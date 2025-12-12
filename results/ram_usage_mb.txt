@@ -1,0 +1,28 @@
+Filename: /home/felix/Documents/Public/research_methods/benchmark/ram_usage.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+     4     26.3 MiB     26.3 MiB           1   @profile
+     5                                         def measure_hash_footprints():
+     6     26.3 MiB      0.0 MiB           1       import os
+     7     90.4 MiB     64.0 MiB           1       input_data = os.urandom(8194 * 8194)
+     8                                         
+     9     91.9 MiB      1.6 MiB           1       import hashlib
+    10     94.6 MiB      2.7 MiB           1       from eth_hash.auto import keccak
+    11                                         
+    12     94.6 MiB      0.0 MiB           1       sha256 = hashlib.sha256()
+    13     94.6 MiB      0.0 MiB           1       sha256.update(input_data)
+    14     94.6 MiB      0.0 MiB           1       _ = sha256.digest()
+    15                                         
+    16     94.6 MiB      0.0 MiB           1       blake2b = hashlib.blake2b()
+    17     94.6 MiB      0.0 MiB           1       blake2b.update(input_data)
+    18     94.6 MiB      0.0 MiB           1       _ = blake2b.digest()
+    19                                         
+    20     94.6 MiB      0.0 MiB           1       sha3_256 = hashlib.sha3_256()
+    21     94.6 MiB      0.0 MiB           1       sha3_256.update(input_data)
+    22     94.6 MiB      0.0 MiB           1       _ = sha3_256.digest()
+    23                                         
+    24     95.8 MiB      1.2 MiB           1       _ = keccak(input_data)
+    25     95.8 MiB      0.0 MiB           1       _ = keccak(input_data)
+
+

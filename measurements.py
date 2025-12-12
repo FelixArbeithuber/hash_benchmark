@@ -2,16 +2,17 @@ import hashlib
 import os
 import timeit
 from enum import Enum
-from typing import Tuple
+from typing import Literal, Tuple, Dict, List
 import math
 
-from eth_hash.auto import keccak  # Canonical Ethereum hash library
+import matplotlib.pyplot as plt
+from eth_hash.auto import keccak
 
 # --- CONFIGURATION ---
 
-BLOCKS: int = 1024
-BLOCK_SIZE: int = 32768 * 2 * 2 * 2 * 2 * 2
-ITERATIONS: int = 50
+BLOCKS: int = 32
+BLOCK_SIZE: int = 2**22
+ITERATIONS: int = 32
 
 # --- HELPER FUNCTIONS ---
 
@@ -61,7 +62,7 @@ def measure_avalanche_effect(algo_name: HashAlgorithm, input_data: bytes) -> flo
 def measure_latency_and_throughput(
     algo_name: HashAlgorithm, input_data: bytes
 ) -> Tuple[float, float]:
-    """Measure Throughput (MB/s) and Latency (ms)"""
+    """Measure Throughput (MiB/s) and Latency (ms)"""
 
     # Define task for timeit
     def run_sha256():
@@ -85,6 +86,8 @@ def measure_latency_and_throughput(
     elif algo_name == HashAlgorithm.Keccak256:
         total_time = timeit.timeit(run_keccak, number=ITERATIONS)
 
+    # total time is in seconds
+    # -> divide by ITERATIONS and 1000 to get avg time in milliseconds
     avg_latency_ms = (total_time / ITERATIONS) * 1000.0
 
     mb_processed = len(input_data) / 2**20
@@ -92,31 +95,41 @@ def measure_latency_and_throughput(
 
     return throughput_mb_s, avg_latency_ms
 
+def format_bytes(size):
+    # 2**10 = 1024
+    power = 2**10
+    n = 0
+    power_labels = {0 : '', 1: 'Ki', 2: 'Mi', 3: 'Gi', 4: 'Ti'}
+    while size >= power:
+        size /= power
+        n += 1
+    return str(size) + (power_labels[n] + 'B')
 
 # --- MAIN EXECUTION ---
-
 
 def main():
     print("Blockchain Hash Function Benchmark Results:\n")
 
-    print()
-    print("*" * 87)
+    print("*" * 70)
     print("BLOCK_SIZE scaling")
-    print("*" * 87)
-    print()
+    print("*" * 70)
 
+    results: Dict[HashAlgorithm, Dict[Literal['sizes', 'throughput', 'latency'], List[float]]] = {
+        algo: {'sizes': [], 'throughput': [], 'latency': []} 
+        for algo in HashAlgorithm
+    }
     for block_size in range(4, int(math.log2(BLOCK_SIZE))):
         input_data: list[bytes] = [os.urandom(2**block_size) for i in range(0, BLOCKS)]
 
         print(
-            f"Blocks: {BLOCKS} | Block Size: {2**block_size} | Data Size: {((2**block_size) * BLOCKS) / 1024 / 1024:.2f}MB | Iterations per Test: {ITERATIONS}\n"
+            f"\nBlocks: {BLOCKS} | Block Size: {format_bytes(2**block_size)} | Iterations per Test: {ITERATIONS}"
         )
         print(
-            f"{'ALGORITHM':<25} | {'THROUGHPUT (MB/s)':<20} | {'LATENCY (ms)':<20} | {'AVALANCHE (%)':<15}"
+            f"{'ALGORITHM':<16} | {'THROUGHPUT (MiB/s)':>18} | {'LATENCY (ms)':>12} | {'AVALANCHE (%)':>13}"
         )
-        print("-" * 87)
+        print("-" * 70)
 
-        for algo in [HashAlgorithm.SHA256, HashAlgorithm.BLAKE2b, HashAlgorithm.SHA3, HashAlgorithm.Keccak256]:
+        for algo in HashAlgorithm:
             mb_per_sec = 0
             latency_ms = 0
             avalanche_score = 0
@@ -129,11 +142,56 @@ def main():
             latency_ms /= len(input_data)
             avalanche_score /= len(input_data)
 
+            results[algo]['sizes'].append(2**block_size / 1024)
+            results[algo]['throughput'].append(mb_per_sec)
+            results[algo]['latency'].append(latency_ms)
+
             print(
-                f"{algo.value:<25} | {mb_per_sec:>18.2f} | {latency_ms:>18.4f} | {avalanche_score:>13.2f}%"
+                f"{algo.value:<16} | {mb_per_sec:>18.2f} | {latency_ms:>12.5f} | {avalanche_score:>13.2f}%"
             )
 
-        print("-" * 87)
+        print("-" * 70)
+
+    # --- PLOTTING ---
+        
+    # Setup the subplots (2 rows, 1 column)
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))
+    
+    # 1. Throughput vs Block Size
+    for algo in HashAlgorithm:
+        ax1.plot(
+            results[algo]['sizes'], 
+            results[algo]['throughput'], 
+            marker='o', 
+            label=algo.name
+        )
+    
+    ax1.set_title('Hashing Throughput vs Block Size')
+    ax1.set_xlabel('Block Size (Kibibytes)')
+    ax1.set_ylabel('Throughput (MiB/s)')
+    ax1.set_xscale('log', base=2)
+    ax1.grid(True, which="both", ls="-", alpha=0.5)
+    ax1.legend()
+
+    # 2. Latency vs Block Size
+    for algo in HashAlgorithm:
+        ax2.plot(
+            results[algo]['sizes'], 
+            results[algo]['latency'], 
+            marker='x', 
+            label=algo.value
+        )
+    
+    ax2.set_title('Hashing Latency vs Block Size')
+    ax2.set_xlabel('Block Size (Kibibytes)')
+    ax2.set_ylabel('Latency (ms)')
+    ax2.set_xscale('log', base=2)
+    ax2.set_yscale('log', base=2)
+    ax2.grid(True, which="both", ls="-", alpha=0.5)
+    ax2.legend()
+
+    plt.tight_layout()
+    plt.show()
 
 
 if __name__ == "__main__":
